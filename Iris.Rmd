@@ -1,0 +1,85 @@
+---
+title: "DS@USF Lab 1"
+author: "Priyanka Thakur"
+date: "1/23/2020"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+library(dplyr)
+library(rio)
+library(Hmisc)
+library(ggpubr)
+my_data=data.frame(iris)
+colnames(my_data)=tolower(make.names(colnames(my_data)))
+attach(my_data)
+
+```
+
+## Understanding the dataset
+
+
+
+```{r}
+levels(my_data$species)
+str(my_data)
+head(my_data)
+summary(my_data)
+dim(my_data)
+
+```
+
+```{r}
+plot(density(my_data$sepal.length,lwd=3,main="Density plot of sepal length"))
+plot(density(my_data$petal.length, lwd=3, main = "Density plot of petal length"))
+plot(density(my_data$petal.width, lwd=3, main = "Density plot of Species"))
+```
+
+```{r}
+setosa = filter(my_data, species == "setosa")
+virginica = filter(my_data, species == "virginica")
+versicolor = filter(my_data, species == "versicolor")
+count(setosa)
+
+
+select(my_data, sepal.length, sepal.width)%>%
+  filter(species == "virginica" & sepal.length <6 & sepal.width <=2.7 )
+```
+```{r}
+my_data %>%
+  group_by(species) %>%
+  summarise (
+  mean_petal_length =  mean(petal.length),
+  mean_sepal_length = mean(sepal.length),
+  median_sepal_width = median(sepal.width),
+  median_pedal_width = median(petal.width))
+```
+
+```{r}
+plot_species = ggviolin(my_data, x="species" , y="sepal.length", fill = "species", palette = c("#00AFBB", "#E7B800", "#FC4E07"), add = "boxplot" , add.params = list(fill='white'))
+plot_species
+```
+
+```{r}
+boxplot(my_data)
+hist(my_data)
+```
+
+
+```{r}
+some.mydata = subset(my_data, select = c("sepal.length", "petal.length", "sepal.width","petal.width"))
+plot(some.mydata)
+cor(some.mydata)
+xx = rcorr(as.matrix(some.mydata))
+xx
+```
